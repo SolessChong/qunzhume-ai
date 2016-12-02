@@ -8,9 +8,13 @@ import pickle
 import re
 import sys
 import tarfile
+import uuid
 
 import numpy as np
 from six.moves import urllib
+import urllib2
+from PIL import Image
+import cStringIO
 import tensorflow as tf
 
 from nltk.corpus import wordnet as wn
@@ -160,9 +164,12 @@ def create_graph():
 
 
 def run_inference_on_image(image):
-    if not tf.gfile.Exists(image):
-        tf.logging.fatal('File does not exist %s', image)
-    image_data = tf.gfile.FastGFile(image, 'rb').read()
+    response = urllib2.urlopen(image)
+    buffer = cStringIO.StringIO(response.read())
+    img = Image.open(buffer)
+    img.save('/tmp/' + image.split('/')[-1])
+    file = open('/tmp/' + image.split('/')[-1])
+    image_data = file.read()
 
     # Creates graph from saved GraphDef.
     create_graph()
