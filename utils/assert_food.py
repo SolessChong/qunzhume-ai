@@ -212,6 +212,7 @@ def assert_food(score_dict, thre=0.2):
         if score_dict[key] > thre:
             synset_set = set(key.split(', '))
             if len(synset_set & food_word_set) > 0:
+                print("Food detected!")
                 return True
     return False
 
